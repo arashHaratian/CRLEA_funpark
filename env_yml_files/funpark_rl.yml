@@ -1,0 +1,45 @@
+name: funpark_rl
+dependencies:
+  - python==3.9.*
+  - setuptools<67
+  - pip
+
+  # BASICS
+  - numpy
+  - scipy
+  - pandas
+  # VISUALIZATION
+  - matplotlib
+  - seaborn
+
+  - pip:
+    # BASICS
+    - jupyterlab
+    - nbconvert
+
+    # NOTICE: miniwob and microrts is installed outside of the yml file!
+    # - selenium
+    # - miniwob==1
+    # - gym-microrts==0.6.0
+
+    # ML  
+    - torch --index-url https://download.pytorch.org/whl/cu118
+    - torchvision --index-url https://download.pytorch.org/whl/cu118
+    - torchaudio  --index-url https://download.pytorch.org/whl/cu118
+    # RL
+    - -e /rl-baselines3-zoo
+    - -r /rl-baselines3-zoo/requirements.txt
+    - gymnasium[accept-rom-license]
+    - pettingzoo
+    - minari
+    - minigrid
+    - supersuit
+    - gymnasium-robotics
+    - mo-gymnasium[all]
+    - miniworld
+    - vizdoom
+    - highway-env
+    - shimmy[all]
+    - mujoco==2.3.3
+    - pygame
+

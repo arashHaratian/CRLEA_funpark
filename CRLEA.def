@@ -1,0 +1,171 @@
+BootStrap: library
+From: ubuntu:22.04
+
+
+%environment
+    . /etc/profile.d/conda.sh
+    conda activate base
+
+%files  
+    env_yml_files
+    gym_wrappers
+%post
+    ## ========================= Installing the basic packages ==========================
+    apt update
+    apt install -y wget vim nano git unzip
+    ## ================== Requirements of stable baselines and mujoco ====================
+    apt install -y libosmesa6-dev libgl1-mesa-glx libglfw3 libgtk2.0-dev pkg-config 
+    ## ============================ Requirements of box2d-py ============================
+    apt install -y cmake swig
+    ## ============================ Requirements of Mine RL (mine_rl env) ============================
+    apt install -y openjdk-8-jdk
+    ## ============================ Requirements of CARLA (carla_rl env) ============================
+    apt install -y libomp5
+    ## ============================ Requirements of AirSim (airsim_rl env) ============================
+    apt install -y libvulkan1 libnvidia-gl-535
+    ## ============================ Requirements of pygame 1.9.6 (sc2_rl env) ============================
+    # apt install -y libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl1.2-dev libsmpeg-dev  subversion libportmidi-dev ffmpeg libswscale-dev libavformat-dev libavcodec-dev libfreetype6-dev
+    apt install -y x11-xserver-utils libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl1.2-dev libportmidi-dev libsmpeg-dev 
+    ## ============================ Requirements of VisDoom and highway-env (funpark_rl env) ============================
+    apt install -y libboost-all-dev libsdl2-dev libopenal-dev
+    apt install -y libxcb-xinerama0
+
+
+    ## ============================ Installing and setting up anaconda ============================
+    wget https://repo.anaconda.com/archive/Anaconda3-2023.07-1-Linux-x86_64.sh -O anaconda3.sh
+    sh anaconda3.sh -bfp /anaconda3
+    rm anaconda3.sh
+    ln -s /anaconda3/etc/profile.d/conda.sh /etc/profile.d/conda.sh
+    . /etc/profile.d/conda.sh
+    
+    ## ================ Adding the conda bin folder to the enviroment to make `. activate` available  ======================
+    echo "export PATH=\"/anaconda3/bin:${PATH}\"" >> $SINGULARITY_ENVIRONMENT
+    conda config --set report_errors false
+
+    # conda config --set auto_activate_base false
+
+   
+    ## ============================ Clonning stable baselines3 zoo repo for full installation ===============================
+    ## if you want the minimal installation, you can commnet out the git command, and add the following line in the base.yml:
+    ## - rl_zoo3
+    ## and comment lines 22 and 23 (you may want to install stable_baselines3 separately) 
+    
+    git clone --recursive https://github.com/DLR-RM/rl-baselines3-zoo
+
+
+
+    ## ============================== Installing and setting up CARLA (for carla_rl env) ==============================
+    wget https://carla-releases.s3.eu-west-3.amazonaws.com/Linux/CARLA_0.9.14.tar.gz
+    mkdir /carla
+    tar -C /carla -xf /CARLA_0.9.14.tar.gz
+    rm CARLA_0.9.14.tar.gz
+    ## === Exporting paths to the scripts that gym env needs (and .egg) ===
+    ## In case you want to downgrade Carla uncomment the line that export the path to .egg file (change the version) 
+    ## and comment the line that installs carla via pip in carla_rl.yml
+
+    # echo "export PYTHONPATH=/carla/PythonAPI/carla/dist/carla-0.9.14-py3.7-linux-x86_64.egg" >> $SINGULARITY_ENVIRONMENT
+    
+    echo "export PYTHONPATH=/carla/PythonAPI" >> $SINGULARITY_ENVIRONMENT
+    echo "export PYTHONPATH=/carla/PythonAPI/carla" >> $SINGULARITY_ENVIRONMENT
+    mkdir /carla/temp
+    chmod g-wx,o-wx /carla/temp/
+    echo "export PYTHON_EGG_CACHE=/carla/temp" >> $SINGULARITY_ENVIRONMENT
+   
+  
+    ## ============================ Installing and setting up CARLA (for carla_rl env) ===============================
+    wget https://github.com/microsoft/AirSim/releases/download/v1.8.1/AirSimNH.zip
+    mkdir /AirSim
+    unzip -q AirSimNH.zip -d /AirSim
+    rm AirSimNH.zip
+    
+
+    ## ============================== Installing and setting up StarCraft2 (for sc2_rl env) ==============================
+    wget https://blzdistsc2-a.akamaihd.net/Linux/SC2.4.10.zip
+    unzip -P iagreetotheeula -q SC2.4.10.zip
+    rm SC2.4.10.zip
+    echo "export SC2PATH=/StarCraftII" >> $SINGULARITY_ENVIRONMENT
+
+
+
+    ## ============================ Updating the base env ============================
+    # . activate base
+    # conda update -n base -c defaults conda
+    # conda install conda=23.7.2
+
+    ## ============================ Creating the base_rl env ============================
+    conda env create -f /env_yml_files/base_rl.yml
+    conda activate base_rl
+
+    ## = Removing mujoco-py as it mess up the mujoco installation =
+    /anaconda3/envs/base_rl/bin/pip uninstall -y mujoco-py
+
+
+    ## ============================ Creating the mine_rl env ============================
+    conda create --name mine_rl --clone base_rl 
+    conda env update --name mine_rl -f /env_yml_files/mine_rl.yml
+
+
+    ## ============================ Creating the carla_rl env ============================
+    conda env create -f /env_yml_files/carla_rl.yml
+    conda activate carla_rl
+    ## = Removing mujoco-py as it mess up the mujoco installation =
+    /anaconda3/envs/carla_rl/bin/pip uninstall -y mujoco-py
+    
+    ## ============================ Creating the airsim_rl env ============================
+    conda create --name airsim_rl --clone base_rl
+    conda activate airsim_rl
+    ## = The dependency of airsim (should be available at installation time for airsim) =
+    pip install msgpack-rpc-python
+    conda env update --name airsim_rl -f /env_yml_files/airsim_rl.yml
+
+    ## ============================ Creating the sc2_rl env ============================
+    conda env create -f /env_yml_files/sc2_rl.yml
+    
+    ## ============================ Creating the funpark_rl env ============================
+    conda create --name funpark_rl python=3.9.* setuptools=66
+    conda activate funpark_rl
+    
+    ## = Installing MicroRTS-Py outside .yml file =
+    pip install gym-microrts
+
+    conda env update --file /env_yml_files/funpark_rl.yml
+    
+    ## = Installing MiniWoB++ outside .yml file =
+    pip install selenium
+    pip install miniwob==1
+
+
+
+
+    # conda create -n test_env --clone base_rl
+    # conda install -n test_env python=3.8
+    # conda update -n test_env --all
+
+    # conda env create -f /env_yml_files/base_rl.yml
+    # conda create --name test_env2 --clone test_env 
+    # conda env update --name test_env2 --file /env_yml_files/base_rl.yml --prune
+    # conda activate test_env2
+
+
+
+    ## ============================ Removing caches ============================
+    apt-get clean
+    rm -rf /var/lib/apt/lists/*
+    # rm /rl-baselines3-zoo
+    pip cache purge
+    find /anaconda3/ -follow -type f -name '*.a' -delete
+    find /anaconda3/ -follow -type f -name '*.js.map' -delete 
+    conda clean -afy
+
+
+
+
+
+
+
+# distribution_config = {"n_units": 10,"n_enemies": 11,"team_gen": {"dist_type": "weighted_teams","unit_types": ["marine", "marauder", "medivac"],"weights": [0.45, 0.45, 0.1],"observe": True,"exception_unit_types": ["medivac"],},"start_positions": {"dist_type": "surrounded_and_reflect","p": 0.5,"map_x": 32,"map_y": 32,}}
+# env = StarCraftCapabilityEnvWrapper(capability_config=distribution_config,map_name="10gen_terran",debug=False,conic_fov=False,use_unit_ranges=True,min_attack_range=2,obs_own_pos=True,fully_observable=False)
+
+# %test
+# . activate sc2_rl
+# python -m pysc2.bin.agent -map Simple64

@@ -1,0 +1,34 @@
+name: base_rl
+dependencies:
+  - pip
+
+  # BASICS
+  - numpy
+  - scipy
+  - pandas
+  # VISUALIZATION
+  - matplotlib
+  - seaborn
+
+  - pip:
+    # BASICS
+    - jupyterlab
+    - nbconvert
+    # ML  
+    - torch --index-url https://download.pytorch.org/whl/cu118
+    - torchvision --index-url https://download.pytorch.org/whl/cu118
+    - torchaudio  --index-url https://download.pytorch.org/whl/cu118
+    # RL
+    - -e /rl-baselines3-zoo
+    - -r /rl-baselines3-zoo/requirements.txt
+
+    - mujoco==2.3.3
+    - gymnasium[accept-rom-license]
+    # - gymnasium[all]
+    
+    # - gym==0.26.2
+    # - stable-baselines3[extra]
+
+    # - tensorflow
+
+# prefix: /anaconda3/envs/base_rl

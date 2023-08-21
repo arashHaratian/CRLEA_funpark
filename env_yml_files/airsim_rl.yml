@@ -1,0 +1,11 @@
+name: airsim_rl
+dependencies:
+  - numpy
+  - scipy
+  - pandas
+
+  - pip:
+    # AirSim
+    # NOTICE: There is a dependency to `msgpack-rpc-python` package that needs to be installed before installing airsim
+    - airsim
+    - -e /gym_wrappers/airsim_gym_wrapper

@@ -1,0 +1,6 @@
+name: mine_rl
+dependencies:
+  - pip
+
+  - pip:
+    - git+https://github.com/minerllabs/minerl

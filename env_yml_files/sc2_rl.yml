@@ -1,0 +1,31 @@
+name: sc2_rl
+dependencies:
+  - python==3.8
+  - pip
+
+  # BASICS
+  - pandas
+  - matplotlib
+  - seaborn
+
+  - pip:
+    # PYSC2
+    - protobuf==3.20.*
+    - pygame==1.9.6
+    - pysc2
+    - -e /gym_wrappers/pysc2_gym_wrapper
+
+    # BASICS
+    - jupyterlab
+    - nbconvert
+    
+    # ML  
+    - torch --index-url https://download.pytorch.org/whl/cu118
+    - torchvision --index-url https://download.pytorch.org/whl/cu118
+    - torchaudio  --index-url https://download.pytorch.org/whl/cu118
+    # RL
+    - -e /rl-baselines3-zoo
+    - -r /rl-baselines3-zoo/requirements.txt
+
+    - mujoco==2.3.3
+    - gymnasium[accept-rom-license]

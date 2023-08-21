@@ -1,0 +1,1 @@
+from gym_pysc2.envs.pysc2env import PySC2Env
