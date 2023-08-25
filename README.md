@@ -146,7 +146,7 @@ he `gym_pysc2` wrapper is based on an old repo ([HERE](https://github.com/vwxyzj
     - **carla_gym_wrapper** : The wrapper for Carla
     - **pysc2_gym_wrapper** : The wrapper for PySC2 and SC2  
 
-- ***examples*** : Some simple examples and environment lists
+- ***examples*** : Some simple examples and list of custom environments
 
 ## Contributions
 
