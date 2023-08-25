@@ -27,9 +27,7 @@ From: ubuntu:22.04
     # apt install -y libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl1.2-dev libsmpeg-dev  subversion libportmidi-dev ffmpeg libswscale-dev libavformat-dev libavcodec-dev libfreetype6-dev
     apt install -y x11-xserver-utils libsdl-image1.2-dev libsdl-mixer1.2-dev libsdl-ttf2.0-dev libsdl1.2-dev libportmidi-dev libsmpeg-dev 
     ## ============================ Requirements of VisDoom and highway-env (funpark_rl env) ============================
-    apt install -y libboost-all-dev libsdl2-dev libopenal-dev
-    apt install -y libxcb-xinerama0
-
+    apt install -y libboost-all-dev libsdl2-dev libopenal-dev    
 
     ## ============================ Installing and setting up anaconda ============================
     wget https://repo.anaconda.com/archive/Anaconda3-2023.07-1-Linux-x86_64.sh -O anaconda3.sh
@@ -118,9 +116,11 @@ From: ubuntu:22.04
     pip install msgpack-rpc-python
     conda env update --name airsim_rl -f /env_yml_files/airsim_rl.yml
 
+
     ## ============================ Creating the sc2_rl env ============================
     conda env create -f /env_yml_files/sc2_rl.yml
     
+
     ## ============================ Creating the funpark_rl env ============================
     conda create --name funpark_rl python=3.9.* setuptools=66
     conda activate funpark_rl
