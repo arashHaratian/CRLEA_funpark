@@ -132,7 +132,12 @@ While using the `gym_pysc2` environments, you may want to mask the chosen action
 
 
 
-he `gym_pysc2` wrapper is based on an old repo ([HERE](https://github.com/vwxyzjn/gym-pysc2)) that is modified and updated from `gym` to `gymnasium`, and adapted the observations to be useable for sb3.
+The `gym_pysc2` wrapper is based on an old repo ([HERE](https://github.com/vwxyzjn/gym-pysc2)) that is modified and updated from `gym` to `gymnasium`, and adapted the observations to be useable for sb3.
+
+
+### Minecraft
+
+The `minerl` package, has no gymnasium implementation; therefore, you CANNOT use stable baselines3 functions directly on the environments. You may want to check resources on the internet on how to create your RL algorithms to learn in `minerl` environments.
 
 
 ## Contents of The Repo:
