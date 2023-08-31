@@ -127,6 +127,7 @@ From: ubuntu:22.04
     
     ## = Installing MicroRTS-Py outside .yml file =
     pip install gym-microrts
+    pip install pettingzoo[all]
 
     conda env update --file /env_yml_files/funpark_rl.yml
     
