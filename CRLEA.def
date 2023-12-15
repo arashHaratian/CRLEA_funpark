@@ -70,7 +70,7 @@ From: ubuntu:22.04
     echo "export PYTHON_EGG_CACHE=/carla/temp" >> $SINGULARITY_ENVIRONMENT
    
   
-    ## ============================ Installing and setting up CARLA (for carla_rl env) ===============================
+    ## ============================ Installing and setting up AirSim (for airsim_rl env) ===============================
     wget https://github.com/microsoft/AirSim/releases/download/v1.8.1/AirSimNH.zip
     mkdir /AirSim
     unzip -q AirSimNH.zip -d /AirSim
